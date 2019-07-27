@@ -3,11 +3,15 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Todo List</title>
+</head>
 <style type="text/css">
 .strike {
-	text-decoration: line-through;
+    text-decoration: line-through;
 }
 
+.inline {
+    display: inline-block;
+}
 
 .alert {
     border: 1px solid;
@@ -25,55 +29,47 @@
     color: white;
 }
 
-
-.alert-success ul {
-    list-style: none;
-}
-
-.alert-error ul {
-    list-style: none;
-}
-
 .text-error {
     color: #c60f13;
 }
-
-
-
 </style>
-</head>
 <body>
-	<h1>Todo List</h1>
-	<div id="todoForm">
-	<!-- 結果メッセージを表示する。 -->
-		<t:messagesPanel />
-		<!-- modelAttribute属性には、ControllerでModelに追加したFormの名前を指定する。
-			 action属性には新規作成処理を実行するためのURL(<contextPath>/todo/create)を指定する。
-			 新規作成処理は更新系の処理なので、method属性にはPOSTメソッドを指定する
-		 -->
-		<form:form action="${pageContext.request.contextPath}/todo/create"
-			method="post" modelAttribute="todoForm">
-			<form:input path="todoTitle" /><br>
-			<form:errors path="todoTitle" cssClass="text-error" /><br>
-			
-			<form:button>Create Todo</form:button>
-		</form:form>
-	</div>
-	<hr />
-	<div id="todoList">
-		<ul>
-			<c:forEach items="${todos}" var="todo">
-				<li><c:choose>
-						<c:when test="${todo.finished}">
-							<span class="strike"> ${f:h(todo.todoTitle)} </span>
-						</c:when>
-						<c:otherwise>
+    <h1>Todo List</h1>
+
+    <div id="todoForm">
+        <t:messagesPanel />
+
+        <form:form
+            action="${pageContext.request.contextPath}/todo/create"
+            method="post" modelAttribute="todoForm">
+            <form:input path="todoTitle" />
+            <form:errors path="todoTitle" cssClass="text-error" />
+            <form:button>Create Todo</form:button>
+        </form:form>
+    </div>
+    <hr />
+    <div id="todoList">
+        <ul>
+            <c:forEach items="${todos}" var="todo">
+                <li><c:choose>
+                        <c:when test="${todo.finished}">
+                            <span class="strike">${f:h(todo.todoTitle)}</span>
+                        </c:when>
+                        <c:otherwise>
                             ${f:h(todo.todoTitle)}
+                            <form:form
+                                action="${pageContext.request.contextPath}/todo/finish"
+                                method="post"
+                                modelAttribute="todoForm"
+                                cssClass="inline">
+                                <form:hidden path="todoId"
+                                    value="${f:h(todo.todoId)}" />
+                                <form:button>Finish</form:button>
+                            </form:form>
                         </c:otherwise>
-					</c:choose>
-				</li>
-			</c:forEach>
-		</ul>
-	</div>
+                    </c:choose></li>
+            </c:forEach>
+        </ul>
+    </div>
 </body>
 </html>
